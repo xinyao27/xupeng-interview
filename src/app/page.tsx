@@ -1,3 +1,5 @@
+import Chat from "@/components/chat/chat";
+
 export default async function Home() {
   return (
     <div className="flex flex-col h-full">
@@ -7,14 +9,12 @@ export default async function Home() {
           A Simple Chat Application Based on Next.js and AI SDK
         </p>
       </header>
-      <div className=" flex flex-row grow">
-        <div className="min-w-[240px] mr-0 m-4 rounded-2xl flex-none py-12 pl-12 pr-0 bg-gray-100">
+      <div className=" flex flex-row grow p-1">
+        <div className="min-w-[240px] mr-0 mx-4 rounded-2xl flex-none py-12 pl-12 pr-0 bg-gray-100">
           <div> conversation list </div>
         </div>
-        <div className="flex-grow m-4 rounded-2xl overflow-y-auto p-12  bg-gray-100">
-          <main className="w-full max-w-4xl mx-auto">
-            <div>chat</div>
-          </main>
+        <div className="flex-grow mx-4 overflow-y-auto p-1 ">
+          <Chat />
         </div>
       </div>
 
