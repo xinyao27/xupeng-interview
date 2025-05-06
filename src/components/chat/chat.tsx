@@ -45,6 +45,14 @@ export default function Chat() {
   useEffect(() => {
     if (currentConversationId === "new chat") {
       setMessages([]);
+    } else if (currentConversationId) {
+      fetch(`/agent/messages/${currentConversationId}`)
+        .then((res) => res.json())
+        .then((data) => {
+          console.log("-----", data);
+          setMessages(data.messages);
+        })
+        .catch((error) => console.error("Failed to load messages:", error));
     }
   }, [currentConversationId, setMessages]);
   return (

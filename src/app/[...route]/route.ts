@@ -6,6 +6,7 @@ import {
   createConversation,
   addMessage,
   getConversation,
+  getConversationMessages,
 } from "@/lib/db/utils";
 
 const app = new Hono().basePath("/agent");
@@ -53,4 +54,16 @@ app.post("/chat", async (c) => {
   }
 });
 
+app.get("/messages/:conversationId", async (c) => {
+  try {
+    const { conversationId } = c.req.param();
+    const messages = await getConversationMessages(conversationId);
+    return c.json({ messages });
+  } catch (error) {
+    console.error("an error occurred while fetching messages:", error);
+    return c.json({ error: "an error occurred while fetching messages." }, 500);
+  }
+});
+
 export const POST = handle(app);
+export const GET = handle(app);
