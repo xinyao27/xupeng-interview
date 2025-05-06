@@ -9,10 +9,12 @@ import {
   type Conversation,
 } from "./schema";
 
-const db = drizzle(process.env.DATABASE_URL);
+const db = drizzle(process.env.DATABASE_URL ?? "file:./sqlite.db");
 
-export async function createConversation(title: string): Promise<Conversation> {
-  const id = nanoid();
+export async function createConversation(
+  id: string,
+  title: string
+): Promise<Conversation> {
   const now = new Date();
 
   await db.insert(conversations).values({
