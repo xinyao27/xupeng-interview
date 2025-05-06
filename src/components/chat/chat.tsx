@@ -98,6 +98,12 @@ export default function Chat() {
         <Textarea
           value={input}
           onChange={handleInputChange}
+          onKeyDown={(e) => {
+            if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
+              e.preventDefault();
+              handleSubmit(e);
+            }
+          }}
           placeholder="enter your message…"
           className="flex-1 min-h-[80px] resize-none"
           disabled={status === "streaming"}
