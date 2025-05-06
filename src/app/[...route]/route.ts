@@ -23,10 +23,9 @@ app.post("/chat", async (c) => {
     const isCreated = await getConversation(conversationId);
 
     if (!isCreated) {
-      await createConversation(
-        conversationId,
-        chatMessages[0]?.content.substring(0, 50) || "new chat"
-      );
+      const chatTitle = chatMessages[0]?.content.substring(0, 50) || "new chat";
+
+      await createConversation(conversationId, chatTitle);
     }
 
     const userMessage = chatMessages[chatMessages.length - 1];

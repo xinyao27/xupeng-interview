@@ -13,7 +13,7 @@ export default async function Home() {
         </p>
       </header>
       <div className=" flex flex-row grow p-1">
-        <div className="min-w-[240px] mr-0 mx-4 rounded-2xl flex-none bg-gray-100">
+        <div className="min-w-[240px] mr-0 mx-4 flex-none">
           <NavLinks conversations={conversations} />
         </div>
         <div className="flex-grow mx-4 overflow-y-auto p-1 ">

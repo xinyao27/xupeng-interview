@@ -1,7 +1,6 @@
-// import { drizzle } from "drizzle-orm/better-sqlite3";
 import { drizzle } from "drizzle-orm/libsql";
 import { nanoid } from "nanoid";
-import { eq } from "drizzle-orm";
+import { eq, desc } from "drizzle-orm";
 import {
   conversations,
   messages,
@@ -33,7 +32,11 @@ export async function createConversation(
 }
 
 export async function getAllConversations(): Promise<Conversation[]> {
-  return db.select().from(conversations).orderBy(conversations.updatedAt).all();
+  return db
+    .select()
+    .from(conversations)
+    .orderBy(desc(conversations.updatedAt))
+    .all();
 }
 
 export async function getConversation(

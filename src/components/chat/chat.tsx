@@ -8,15 +8,29 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import ReactMarkdown from "react-markdown";
+import useChatStore from "@/store/chatStore";
+import { Message } from "@/lib/db/schema";
 
 export default function Chat() {
-  const { messages, input, handleInputChange, handleSubmit, status, stop } =
-    useChat({
-      api: "/agent/chat",
-      onFinish: () => {
-        scrollToBottom();
-      },
-    });
+  const { currentConversationId, updateNewChat } = useChatStore();
+  const {
+    messages,
+    input,
+    handleInputChange,
+    handleSubmit,
+    status,
+    stop,
+    setMessages,
+    id,
+  } = useChat({
+    api: "/agent/chat",
+    onFinish: () => {
+      scrollToBottom();
+      if (currentConversationId === "new chat") {
+        updateNewChat(id, input.substring(0, 50));
+      }
+    },
+  });
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -28,12 +42,17 @@ export default function Chat() {
     scrollToBottom();
   }, [messages]);
 
+  useEffect(() => {
+    if (currentConversationId === "new chat") {
+      setMessages([]);
+    }
+  }, [currentConversationId, setMessages]);
   return (
     <div className="flex flex-col h-full w-full mx-auto">
       <Card className="flex-1 p-4 mb-4 overflow-hidden">
         <ScrollArea className="h-[60vh]">
           <div className="space-y-4 pb-4">
-            {messages.map((message) => (
+            {messages.map((message: Message) => (
               <div
                 key={message.id}
                 className={`flex ${
