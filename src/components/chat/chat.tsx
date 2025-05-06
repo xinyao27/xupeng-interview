@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { useChat } from "@ai-sdk/react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -11,26 +11,29 @@ import ReactMarkdown from "react-markdown";
 import useChatStore from "@/store/chatStore";
 import { Message } from "@/lib/db/schema";
 
-export default function Chat() {
-  const { currentConversationId, updateNewChat } = useChatStore();
-  const {
-    messages,
-    input,
-    handleInputChange,
-    handleSubmit,
-    status,
-    stop,
-    setMessages,
-    id,
-  } = useChat({
-    api: "/agent/chat",
-    onFinish: () => {
-      scrollToBottom();
-      if (currentConversationId === "new chat") {
-        updateNewChat(id, input.substring(0, 50));
-      }
-    },
-  });
+function Chat({
+  message,
+  currentConversationId,
+}: {
+  message: Message[];
+  currentConversationId: string | undefined;
+}) {
+  const { updateNewChat } = useChatStore();
+  const { messages, input, handleInputChange, handleSubmit, status, stop, id } =
+    useChat({
+      api: "/agent/chat",
+      id:
+        currentConversationId === "new chat"
+          ? undefined
+          : currentConversationId,
+      initialMessages: message,
+      onFinish: () => {
+        scrollToBottom();
+        if (currentConversationId === "new chat") {
+          updateNewChat(id, input.substring(0, 50));
+        }
+      },
+    });
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -42,19 +45,6 @@ export default function Chat() {
     scrollToBottom();
   }, [messages]);
 
-  useEffect(() => {
-    if (currentConversationId === "new chat") {
-      setMessages([]);
-    } else if (currentConversationId) {
-      fetch(`/agent/messages/${currentConversationId}`)
-        .then((res) => res.json())
-        .then((data) => {
-          console.log("-----", data);
-          setMessages(data.messages);
-        })
-        .catch((error) => console.error("Failed to load messages:", error));
-    }
-  }, [currentConversationId, setMessages]);
   return (
     <div className="flex flex-col h-full w-full mx-auto">
       <Card className="flex-1 p-4 mb-4 overflow-hidden">
@@ -126,5 +116,26 @@ export default function Chat() {
         </div>
       </form>
     </div>
+  );
+}
+
+export default function ChatComp({}) {
+  const { currentConversationId } = useChatStore();
+  const [messages, setMessages] = useState<Message[]>([]);
+  useEffect(() => {
+    if (currentConversationId === "new chat") {
+      setMessages([]);
+    } else if (currentConversationId) {
+      fetch(`/agent/messages/${currentConversationId}`)
+        .then((res) => res.json())
+        .then((data) => {
+          console.log("-----", data);
+          setMessages(data.messages);
+        })
+        .catch((error) => console.error("Failed to load messages:", error));
+    }
+  }, [currentConversationId, setMessages]);
+  return (
+    <Chat message={messages} currentConversationId={currentConversationId} />
   );
 }
