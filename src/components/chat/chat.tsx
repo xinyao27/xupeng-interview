@@ -9,7 +9,7 @@ import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import ReactMarkdown from "react-markdown";
 import useChatStore from "@/store/chatStore";
-import { Message } from "@/lib/db/schema";
+import { Message } from "ai";
 
 function Chat({
   message,
